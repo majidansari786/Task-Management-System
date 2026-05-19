@@ -5,17 +5,72 @@ const generateToken = require("../middleware/generateToken");
 const jwt = require("jsonwebtoken");
 
 async function signup(req, res) {
-  const { name, email, pass } = req.body;
-  const hashedpass = await bcrypt.hash(pass, 10);
-  const existingUser = await user_model.findOne({ email });
-  if (existingUser) {
-    return res.status(400).json({ message: "User already exists" });
+  try {
+    const { name, email, pass } = req.body;
+    if (!name || !email || !pass) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    if (pass.length < 6) {
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 6 characters" });
+    }
+
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: "Invalid email format" });
+    }
+
+    const hashedpass = await bcrypt.hash(pass, 10);
+    const existingUser = await user_model.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists" });
+    }
+
+    const newUser = new user_model({ name, email, password: hashedpass });
+    await newUser.save();
+
+    const token = generateToken(newUser._id, newUser.role);
+
+    return res
+      .status(201)
+      .cookie("userAccessToken", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+        maxAge: 24 * 60 * 60 * 1000,
+      })
+      .json({
+        message: "User created successfully",
+        token,
+        user: { id: newUser._id, email: newUser.email, role: newUser.role },
+      });
+  } catch (error) {
+    console.error("Signup error:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
-  const newUser = new user_model({ name, email, password: hashedpass });
-  await newUser.save();
+}
 
-  const token = generateToken(newUser._id, newUser.role);
+async function login(req, res) {
+  const { email, pass } = req.body;
 
+  if (!email || !pass) {
+    return res.status(400).json({ error: "Email and password are required" });
+  }
+
+  const log_user = await user_model.findOne({ email });
+  if (!log_user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  const matchPassword = await bcrypt.compare(pass, log_user.password);
+  if (!matchPassword) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+
+  const token = generateToken(log_user._id, log_user.role);
   return res
     .status(200)
     .cookie("userAccessToken", token, {
@@ -24,27 +79,11 @@ async function signup(req, res) {
       sameSite: "Lax",
       maxAge: 24 * 60 * 60 * 1000,
     })
-    .json({ SUCCESS: "USER CREATED." });
-}
-
-async function login(req, res) {
-  const { email, pass } = req.body;
-  const log_user = await user_model.findOne({ email });
-  if (!log_user) {
-    return res.status(404).json({ error: "User not exist." });
-  }
-  const matchPassword = await bcrypt.compare(pass, log_user.password);
-
-  const token = generateToken(log_user._id, log_user.role);
-  return res
-    .cookie("userAccessToken", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
-      maxAge: 24 * 60 * 60 * 1000,
-    })
-    .json({ SUCCESS: "user logged in." })
-    .status(200);
+    .json({
+      message: "User logged in successfully",
+      token,
+      user: { id: log_user._id, email: log_user.email, role: log_user.role },
+    });
 }
 
 module.exports = {
