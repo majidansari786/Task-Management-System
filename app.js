@@ -7,6 +7,7 @@ require('./config/db');
 const auth_route = require('./routers/user_auth');
 const task_route = require('./routers/task');
 const errorHandler = require('./middleware/errorHandler');
+const { swaggerUi, swaggerSpec } = require('./config/swagger');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,8 +18,11 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Swagger documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.get('/', (req, res) => {
-  res.json({ message: 'Server is running', version: '1.0.0', timestamp: new Date() });
+  res.json({ message: 'Server is running', version: '1.0.0', timestamp: new Date(), docs: '/api-docs' });
 });
 
 app.use('/api/v1/auth', auth_route);
@@ -32,4 +36,5 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server started at http://localhost:${PORT}`);
+  console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
 });
