@@ -89,7 +89,6 @@ function TaskForm({ onSubmit, initialTask = null, isEditing = false }) {
           disabled={loading}
         >
           <option value="pending">Pending</option>
-          <option value="in_progress">In Progress</option>
           <option value="completed">Completed</option>
         </select>
       </div>
