@@ -6,12 +6,12 @@ const jwt = require("jsonwebtoken");
 
 async function signup(req, res) {
   try {
-    const { name, email, pass } = req.body;
-    if (!name || !email || !pass) {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    if (pass.length < 6) {
+    if (password.length < 6) {
       return res
         .status(400)
         .json({ error: "Password must be at least 6 characters" });
@@ -22,14 +22,14 @@ async function signup(req, res) {
       return res.status(400).json({ error: "Invalid email format" });
     }
 
-    const hashedpass = await bcrypt.hash(pass, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const existingUser = await user_model.findOne({ email });
 
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    const newUser = new user_model({ name, email, password: hashedpass });
+    const newUser = new user_model({ name, email, password: hashedPassword });
     await newUser.save();
 
     const token = generateToken(newUser._id, newUser.role);
@@ -54,9 +54,9 @@ async function signup(req, res) {
 }
 
 async function login(req, res) {
-  const { email, pass } = req.body;
+  const { email, password } = req.body;
 
-  if (!email || !pass) {
+  if (!email || !password) {
     return res.status(400).json({ error: "Email and password are required" });
   }
 
@@ -65,8 +65,8 @@ async function login(req, res) {
     return res.status(404).json({ error: "User not found" });
   }
 
-  const matchPassword = await bcrypt.compare(pass, log_user.password);
-  if (!matchPassword) {
+  const isPasswordValid = await bcrypt.compare(password, log_user.password);
+  if (!isPasswordValid) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
