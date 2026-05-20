@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "scalable-api-collection",
-    "name": "Scalable REST API",
-    "description": "Collection for Scalable REST API with Authentication & Role-Based Access",
+    "_postman_id": "internshala-api-collection",
+    "name": "Task Management API - Complete Collection",
+    "description": "Complete API collection for Task Management System with Authentication & Role-Based Access",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -10,7 +10,7 @@
       "name": "Authentication",
       "item": [
         {
-          "name": "Signup",
+          "name": "Register User",
           "request": {
             "method": "POST",
             "header": [
@@ -21,7 +21,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"pass\": \"password123\"\n}"
+              "raw": "{\"name\": \"John Doe\",\"email\": \"john@example.com\",\"password\": \"SecurePass@123\"}"
             },
             "url": {
               "raw": "http://localhost:3000/api/v1/auth/signup",
@@ -33,7 +33,7 @@
           }
         },
         {
-          "name": "Login",
+          "name": "Login User",
           "request": {
             "method": "POST",
             "header": [
@@ -44,7 +44,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"john@example.com\",\n  \"pass\": \"password123\"\n}"
+              "raw": "{\"email\": \"john@example.com\",\"password\": \"SecurePass@123\"}"
             },
             "url": {
               "raw": "http://localhost:3000/api/v1/auth/login",
@@ -71,13 +71,12 @@
               },
               {
                 "key": "Authorization",
-                "value": "Bearer YOUR_JWT_TOKEN",
-                "type": "text"
+                "value": "Bearer {{token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"My Task\",\n  \"description\": \"Task description\",\n  \"status\": \"pending\"\n}"
+              "raw": "{\"title\": \"Complete Project\",\"description\": \"Finish the assignment\",\"status\": \"pending\"}"
             },
             "url": {
               "raw": "http://localhost:3000/api/v1/tasks",
@@ -89,14 +88,13 @@
           }
         },
         {
-          "name": "Get My Tasks",
+          "name": "Get All User Tasks",
           "request": {
             "method": "GET",
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer YOUR_JWT_TOKEN",
-                "type": "text"
+                "value": "Bearer {{token}}"
               }
             ],
             "url": {
@@ -109,22 +107,21 @@
           }
         },
         {
-          "name": "Get Task by ID",
+          "name": "Get Single Task",
           "request": {
             "method": "GET",
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer YOUR_JWT_TOKEN",
-                "type": "text"
+                "value": "Bearer {{token}}"
               }
             ],
             "url": {
-              "raw": "http://localhost:3000/api/v1/tasks/TASK_ID",
+              "raw": "http://localhost:3000/api/v1/tasks/{{taskId}}",
               "protocol": "http",
               "host": ["localhost"],
               "port": "3000",
-              "path": ["api", "v1", "tasks", "TASK_ID"]
+              "path": ["api", "v1", "tasks", "{{taskId}}"]
             }
           }
         },
@@ -139,20 +136,19 @@
               },
               {
                 "key": "Authorization",
-                "value": "Bearer YOUR_JWT_TOKEN",
-                "type": "text"
+                "value": "Bearer {{token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Updated Task\",\n  \"status\": \"completed\"\n}"
+              "raw": "{\"title\": \"Updated Title\",\"status\": \"in_progress\"}"
             },
             "url": {
-              "raw": "http://localhost:3000/api/v1/tasks/TASK_ID",
+              "raw": "http://localhost:3000/api/v1/tasks/{{taskId}}",
               "protocol": "http",
               "host": ["localhost"],
               "port": "3000",
-              "path": ["api", "v1", "tasks", "TASK_ID"]
+              "path": ["api", "v1", "tasks", "{{taskId}}"]
             }
           }
         },
@@ -163,16 +159,15 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer YOUR_JWT_TOKEN",
-                "type": "text"
+                "value": "Bearer {{token}}"
               }
             ],
             "url": {
-              "raw": "http://localhost:3000/api/v1/tasks/TASK_ID",
+              "raw": "http://localhost:3000/api/v1/tasks/{{taskId}}",
               "protocol": "http",
               "host": ["localhost"],
               "port": "3000",
-              "path": ["api", "v1", "tasks", "TASK_ID"]
+              "path": ["api", "v1", "tasks", "{{taskId}}"]
             }
           }
         },
@@ -183,8 +178,7 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer ADMIN_JWT_TOKEN",
-                "type": "text"
+                "value": "Bearer {{adminToken}}"
               }
             ],
             "url": {
@@ -198,5 +192,24 @@
         }
       ]
     }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "taskId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
   ]
 }
