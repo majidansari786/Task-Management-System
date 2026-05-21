@@ -5,7 +5,7 @@ import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import Dashboard from './components/Dashboard';
 
-const API_URL = 'http://localhost:3000/api/v1';
+const API_URL = 'http://localhost:5000/api/v1';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
