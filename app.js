@@ -11,7 +11,7 @@ const errorHandler = require('./middleware/errorHandler');
 const { swaggerUi, swaggerSpec } = require('./config/swagger');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
   origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001'],
