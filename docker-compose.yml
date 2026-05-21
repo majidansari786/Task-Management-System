@@ -30,7 +30,7 @@ services:
       SECRET_TOKEN: your_secret_key_here_change_in_production
       NODE_ENV: production
     ports:
-      - "3000:3000"
+      - "5000:5000"
     depends_on:
       mongodb:
         condition: service_healthy
