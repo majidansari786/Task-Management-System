@@ -4,7 +4,7 @@ import './Dashboard.css';
 import TaskList from './TaskList';
 import TaskForm from './TaskForm';
 
-const API_URL = 'http://localhost:3000/api/v1';
+const API_URL = 'http://localhost:5000/api/v1';
 
 function Dashboard({ user, onLogout }) {
   const [tasks, setTasks] = useState([]);
